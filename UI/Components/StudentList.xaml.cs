@@ -31,6 +31,8 @@ namespace UI.Components
         {
             using (var context = new DatabaseContext())
             {
+                context.Database.EnsureCreated();
+                
                 context.Add<DataBaseUser>(new DataBaseUser()
                 {
                     Name = "Test",
@@ -38,12 +40,17 @@ namespace UI.Components
                     Expire = DateTime.Now,
                     Role = PSProject.Other.UserEnumRoles.STUDENT
                 });
-                context.SaveChanges();
+                
+               
 
                 var records = context.Users.ToList();
+                var existingUser = context.Users.FirstOrDefault();
+                MessageBox.Show($"User ID: {existingUser.Id}, Name: {existingUser.Name}, Role: {existingUser.Role}");
                 if (records != null)
                 {
                     students.DataContext = records;
+                    students.ItemsSource = records;
+                    MessageBox.Show($"{records.Count}");
                 }
                 else
                 {
